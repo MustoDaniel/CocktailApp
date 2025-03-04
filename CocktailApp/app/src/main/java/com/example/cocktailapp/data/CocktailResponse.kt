@@ -1,6 +1,6 @@
 package com.example.cocktailapp.data
 
-import Cocktail
+import com.example.cocktailapp.database.entities.Cocktail
 
 data class CocktailResponse(
     val drinks : List<Cocktail>?

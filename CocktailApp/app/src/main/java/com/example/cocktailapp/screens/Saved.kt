@@ -1,6 +1,6 @@
 package com.example.cocktailapp.screens
 
-import Cocktail
+import com.example.cocktailapp.database.entities.Cocktail
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -11,24 +11,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import com.example.cocktailapp.R
 import com.example.cocktailapp.api.RetrofitInstance
-import com.example.cocktailapp.data.Datasource
 import com.example.cocktailapp.database.CocktailDBService
 import com.example.cocktailapp.items.CocktailList
 import com.example.cocktailapp.items.Gif

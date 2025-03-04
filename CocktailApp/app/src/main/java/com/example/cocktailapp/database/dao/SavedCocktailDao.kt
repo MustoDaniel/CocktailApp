@@ -18,6 +18,6 @@ interface SavedCocktailDao {
     @Delete
     suspend fun delete(savedCocktail: SavedCocktail)
 
-    @Query("select s.idCocktail from cocktail c join savedcocktail s on c.id = s.idCocktail ")
+    @Query("select s.idCocktail from cocktail c join savedcocktail s on c.idDrink = s.idCocktail ")
     suspend fun getSavedCocktails(): List<Int>
 }

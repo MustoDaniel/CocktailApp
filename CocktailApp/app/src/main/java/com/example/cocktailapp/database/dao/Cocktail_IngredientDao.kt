@@ -12,7 +12,7 @@ interface Cocktail_IngredientDao {
 
     @Query("select i.name from ingredient i " +
             "join cocktail_ingredient ci on i.id = ci.idIngredient " +
-            "join cocktail c on c.id = ci.idCocktail " +
-            "where c.name = :cocktailName")
+            "join cocktail c on c.idDrink = ci.idCocktail " +
+            "where c.strDrink = :cocktailName")
     fun getIngredientsByCocktailName(cocktailName: String): List<String>
 }

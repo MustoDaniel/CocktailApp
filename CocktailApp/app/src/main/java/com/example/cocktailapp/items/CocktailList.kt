@@ -1,6 +1,6 @@
 package com.example.cocktailapp.items
 
-import Cocktail
+import com.example.cocktailapp.database.entities.Cocktail
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.grid.GridCells

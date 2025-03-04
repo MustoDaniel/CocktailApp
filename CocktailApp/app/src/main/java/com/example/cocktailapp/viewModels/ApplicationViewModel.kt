@@ -1,11 +1,10 @@
 package com.example.cocktailapp.viewModels
 
-import Cocktail
+import com.example.cocktailapp.database.entities.Cocktail
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.cocktailapp.items.CocktailList
 
 class ApplicationViewModel : ViewModel() {
 
@@ -18,4 +17,5 @@ class ApplicationViewModel : ViewModel() {
     var instructions by mutableStateOf("")
     var text by mutableStateOf("")
     var currentCocktail : Cocktail? = Cocktail()
+    var isSaved by mutableStateOf(false)
 }

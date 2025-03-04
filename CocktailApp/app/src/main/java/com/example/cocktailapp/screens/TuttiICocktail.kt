@@ -1,6 +1,6 @@
 package com.example.cocktailapp.screens
 
-import Cocktail
+import com.example.cocktailapp.database.entities.Cocktail
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
@@ -17,10 +17,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.cocktailapp.R
 import com.example.cocktailapp.data.Datasource
+import com.example.cocktailapp.database.CocktailDBService
 import com.example.cocktailapp.items.CocktailList
 import com.example.cocktailapp.items.Gif
 import com.example.cocktailapp.viewModels.ApplicationViewModel
@@ -36,13 +38,13 @@ fun Screen2(navController: NavController, viewModel: ApplicationViewModel){
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
-        val coroutineScope = rememberCoroutineScope()
         var cocktails by remember { mutableStateOf<List<Cocktail>>(emptyList()) }
 
-        LaunchedEffect(Unit) {
-            coroutineScope.launch {
-                cocktails = Datasource().loadCocktails()
-            }
+        val context = LocalContext.current
+        LaunchedEffect(Unit){
+            val serviceDB = CocktailDBService(context).repository
+            val dbCocktails = serviceDB.getCocktails()!!.toMutableList()
+            cocktails = dbCocktails
         }
 
         if (cocktails.isEmpty()) {

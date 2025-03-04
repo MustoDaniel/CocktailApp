@@ -1,7 +1,6 @@
 package com.example.cocktailapp.screens
 
-import Cocktail
-import android.app.AlertDialog
+import com.example.cocktailapp.database.entities.Cocktail
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -13,17 +12,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -32,17 +26,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.cocktailapp.api.RetrofitInstance
-import com.example.cocktailapp.database.CocktailDB
 import com.example.cocktailapp.database.CocktailDBService
+import com.example.cocktailapp.database.DatabaseRepository
 import com.example.cocktailapp.database.entities.SavedCocktail
 import com.example.cocktailapp.items.CocktailCard
 import com.example.cocktailapp.items.ListString
 import com.example.cocktailapp.items.OptionList
+import com.example.cocktailapp.viewModels.ApplicationViewModel
 import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
-fun Home(viewModel: com.example.cocktailapp.viewModels.ApplicationViewModel = viewModel()){
+fun Home(viewModel: ApplicationViewModel = viewModel()){
 
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
@@ -121,7 +116,7 @@ fun Home(viewModel: com.example.cocktailapp.viewModels.ApplicationViewModel = vi
                             "nome", -> {
                                 coroutineScope.launch {
                                     viewModel.currentCocktail = apiService.getCocktailByName(viewModel.text).drinks?.firstOrNull()
-                                    changeValues(viewModel, viewModel.currentCocktail)
+                                    changeValues(viewModel, viewModel.currentCocktail, serviceDB)
                                 }
                             }
                             "id", -> {
@@ -130,13 +125,13 @@ fun Home(viewModel: com.example.cocktailapp.viewModels.ApplicationViewModel = vi
                                         viewModel.currentCocktail = null
                                     else
                                         viewModel.currentCocktail = apiService.getCocktailById(viewModel.text).drinks?.firstOrNull()
-                                    changeValues(viewModel, viewModel.currentCocktail)
+                                    changeValues(viewModel, viewModel.currentCocktail, serviceDB)
                                 }
                             }
                             "random", -> {
                                 coroutineScope.launch {
                                     viewModel.currentCocktail = apiService.getRandomCocktail().drinks?.firstOrNull()
-                                    changeValues(viewModel, viewModel.currentCocktail)
+                                    changeValues(viewModel, viewModel.currentCocktail, serviceDB)
                                 }
                             }
                         }
@@ -146,20 +141,25 @@ fun Home(viewModel: com.example.cocktailapp.viewModels.ApplicationViewModel = vi
                 }
 
                 val context = LocalContext.current
-                var isSaved by remember { mutableStateOf(false) }
                 if(viewModel.cocktailName != "not found" && viewModel.cocktailName != ""){
                     Button(
                         onClick = {
                             coroutineScope.launch {
+                                val cocktailExists = serviceDB.getCocktailById(viewModel.currentCocktail!!.idDrink) != null
+
+                                if (!cocktailExists) {
+                                    serviceDB.insertCocktail(Cocktail(viewModel.currentCocktail!!.idDrink, viewModel.currentCocktail!!.strDrink))
+                                }
+
                                 if (!serviceDB.getSavedCocktails().contains(viewModel.currentCocktail!!.idDrink)){
                                     serviceDB.insertSavedCocktail(SavedCocktail(viewModel.currentCocktail!!.idDrink))
                                     Toast.makeText(context, "Cocktail aggiunto ai preferiti", Toast.LENGTH_SHORT).show()
-                                    isSaved = true
+                                    viewModel.isSaved = true
                                 }
                                 else{
                                     serviceDB.deleteSavedCocktail(SavedCocktail(viewModel.currentCocktail!!.idDrink))
                                     Toast.makeText(context, "Cocktail rimosso dai preferiti", Toast.LENGTH_SHORT).show()
-                                    isSaved = false
+                                    viewModel.isSaved = false
                                 }
                             }
 
@@ -168,12 +168,12 @@ fun Home(viewModel: com.example.cocktailapp.viewModels.ApplicationViewModel = vi
                         LaunchedEffect(Unit) {
                             coroutineScope.launch {
                                 if(serviceDB.getSavedCocktails().contains(viewModel.currentCocktail!!.idDrink))
-                                    isSaved = true
+                                    viewModel.isSaved = true
                                 else
-                                    isSaved = false
+                                    viewModel.isSaved = false
                             }
                         }
-                        if(!isSaved)
+                        if(!viewModel.isSaved)
                             Text( text = "Salva" )
                         else
                             Text( text = "Rimuovi")
@@ -184,10 +184,17 @@ fun Home(viewModel: com.example.cocktailapp.viewModels.ApplicationViewModel = vi
     }
 }
 
-fun changeValues(viewModel: com.example.cocktailapp.viewModels.ApplicationViewModel, cocktail: Cocktail?){
+suspend fun changeValues(viewModel: ApplicationViewModel, cocktail: Cocktail?, serviceDB: DatabaseRepository) {
     viewModel.imageUrl = cocktail?.strDrinkThumb ?: "not found"
     viewModel.cocktailName = cocktail?.strDrink ?: "not found"
     viewModel.ingredients = cocktail?.getIngredientsList() ?: listOf("", "", "", "")
     viewModel.instructions = cocktail?.strInstructionsIT ?: "not found"
     viewModel.text = ""
+
+    // Aggiornamento dello stato di isSaved
+    val cocktailId = cocktail?.idDrink
+    if (cocktailId != null) {
+        val isCocktailSaved = serviceDB.getSavedCocktails().contains(cocktailId)
+        viewModel.isSaved = isCocktailSaved
+    }
 }

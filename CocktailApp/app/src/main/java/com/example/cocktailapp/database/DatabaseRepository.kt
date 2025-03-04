@@ -1,10 +1,10 @@
 package com.example.cocktailapp.database
 
+import com.example.cocktailapp.database.entities.Cocktail
 import com.example.cocktailapp.database.dao.CocktailDao
 import com.example.cocktailapp.database.dao.Cocktail_IngredientDao
 import com.example.cocktailapp.database.dao.IngredientDao
 import com.example.cocktailapp.database.dao.SavedCocktailDao
-import com.example.cocktailapp.database.entities.Cocktail
 import com.example.cocktailapp.database.entities.Cocktail_Ingredient
 import com.example.cocktailapp.database.entities.Ingredient
 import com.example.cocktailapp.database.entities.SavedCocktail
@@ -20,6 +20,13 @@ class DatabaseRepository(
     //cocktail
     suspend fun insertCocktail(cocktail: Cocktail) = withContext(Dispatchers.IO){
         cocktailDao.insert(cocktail)
+    }
+    suspend fun getCocktailById(id: Int) : Cocktail? = withContext(Dispatchers.IO){
+        cocktailDao.getCocktailById(id)
+    }
+
+    suspend fun getCocktails() : List<Cocktail>? = withContext(Dispatchers.IO){
+        cocktailDao.getCocktails()
     }
 
     //ingredient

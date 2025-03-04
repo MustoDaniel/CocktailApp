@@ -1,6 +1,6 @@
 package com.example.cocktailapp.items
 
-import Cocktail
+import com.example.cocktailapp.database.entities.Cocktail
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

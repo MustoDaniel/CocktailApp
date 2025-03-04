@@ -1,17 +1,16 @@
 package com.example.cocktailapp.database
 
+import com.example.cocktailapp.database.entities.Cocktail
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
-import com.example.cocktailapp.api.RetrofitInstance
 import com.example.cocktailapp.data.Datasource
 import com.example.cocktailapp.database.dao.CocktailDao
 import com.example.cocktailapp.database.dao.Cocktail_IngredientDao
 import com.example.cocktailapp.database.dao.IngredientDao
 import com.example.cocktailapp.database.dao.SavedCocktailDao
-import com.example.cocktailapp.database.entities.Cocktail
 import com.example.cocktailapp.database.entities.Cocktail_Ingredient
 import com.example.cocktailapp.database.entities.Ingredient
 import com.example.cocktailapp.database.entities.SavedCocktail
@@ -26,7 +25,7 @@ import kotlinx.coroutines.launch
         SavedCocktail::class,
         Cocktail_Ingredient::class
     ],
-    version = 1
+    version = 2
 )
 abstract class CocktailDB : RoomDatabase() {
     abstract fun cocktailDao(): CocktailDao
@@ -63,7 +62,7 @@ abstract class CocktailDB : RoomDatabase() {
             val cocktails = Datasource().loadCocktails()
 
             cocktails.forEach { cocktail ->
-                cocktailDao.insert(Cocktail(cocktail.idDrink, cocktail.strDrink))
+                cocktailDao.insert(cocktail as Cocktail)
             }
         }
     }

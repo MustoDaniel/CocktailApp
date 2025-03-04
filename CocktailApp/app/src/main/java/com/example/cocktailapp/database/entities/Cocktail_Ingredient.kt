@@ -8,7 +8,7 @@ import androidx.room.ForeignKey
     foreignKeys = [
         ForeignKey(
             entity = Cocktail::class,
-            parentColumns = ["id"],
+            parentColumns = ["idDrink"],
             childColumns = ["idCocktail"],
             onDelete = ForeignKey.CASCADE,
             onUpdate = ForeignKey.CASCADE
