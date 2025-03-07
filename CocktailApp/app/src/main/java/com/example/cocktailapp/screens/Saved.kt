@@ -47,19 +47,16 @@ fun Saved(navController: NavController, appViewModel: ApplicationViewModel){
             textAlign = TextAlign.Center,
             fontSize = 50.sp,
         )
-        val serviceDB = CocktailDBService(LocalContext.current).repository
+        val serviceDB = CocktailDBService.getRepository()
         val apiService = RetrofitInstance.api
         val cocktails = remember { mutableStateListOf<Cocktail>() }
-        var cocktailsID = remember { mutableStateListOf<Int>() }
+        val cocktailsID = remember { mutableStateListOf<Int>() }
 
-        val coroutineScope = rememberCoroutineScope()
         LaunchedEffect(Unit) {
-            coroutineScope.launch {
-                cocktailsID.addAll(serviceDB.getSavedCocktails())
-                if(!cocktailsID.isEmpty()){
-                    cocktailsID.forEach{ id ->
-                        cocktails.add(apiService.getCocktailById(id.toString()).drinks!!.first())
-                    }
+            cocktailsID.addAll(serviceDB.getSavedCocktails())
+            if(!cocktailsID.isEmpty()){
+                cocktailsID.forEach{ id ->
+                    cocktails.add(apiService.getCocktailById(id.toString()).drinks!!.first())
                 }
             }
         }

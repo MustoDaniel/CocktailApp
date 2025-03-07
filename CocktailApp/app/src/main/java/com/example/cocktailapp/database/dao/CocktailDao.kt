@@ -3,11 +3,12 @@ package com.example.cocktailapp.database.dao
 import com.example.cocktailapp.database.entities.Cocktail
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 
 @Dao
 interface CocktailDao {
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(cocktail: Cocktail)
 
     @Query("select * from cocktail where idDrink = :id")

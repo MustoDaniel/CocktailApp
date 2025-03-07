@@ -40,9 +40,8 @@ fun Screen2(navController: NavController, viewModel: ApplicationViewModel){
     ) {
         var cocktails by remember { mutableStateOf<List<Cocktail>>(emptyList()) }
 
-        val context = LocalContext.current
         LaunchedEffect(Unit){
-            val serviceDB = CocktailDBService(context).repository
+            val serviceDB = CocktailDBService.getRepository()
             val dbCocktails = serviceDB.getCocktails()!!.toMutableList()
             cocktails = dbCocktails
         }

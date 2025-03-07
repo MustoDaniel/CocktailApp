@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.cocktailapp.database.CocktailDBService
 import com.example.cocktailapp.items.BottomNavigationMenu
 import com.example.cocktailapp.screens.Home
 import com.example.cocktailapp.screens.Saved
@@ -29,6 +30,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CocktailAppTheme {
+
+                CocktailDBService.init(this)
 
                 val navController = rememberNavController()
                 val appViewModel : ApplicationViewModel = viewModel()

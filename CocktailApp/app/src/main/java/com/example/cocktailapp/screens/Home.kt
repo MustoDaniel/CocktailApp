@@ -41,7 +41,7 @@ fun Home(viewModel: ApplicationViewModel = viewModel()){
 
     val coroutineScope = rememberCoroutineScope()
     val scrollState = rememberScrollState()
-    val serviceDB = CocktailDBService(LocalContext.current).repository
+    val serviceDB = CocktailDBService.getRepository()
 
     Column{
         Column(
@@ -166,12 +166,10 @@ fun Home(viewModel: ApplicationViewModel = viewModel()){
                         }
                     ) {
                         LaunchedEffect(Unit) {
-                            coroutineScope.launch {
-                                if(serviceDB.getSavedCocktails().contains(viewModel.currentCocktail!!.idDrink))
-                                    viewModel.isSaved = true
-                                else
-                                    viewModel.isSaved = false
-                            }
+                            if(serviceDB.getSavedCocktails().contains(viewModel.currentCocktail!!.idDrink))
+                                viewModel.isSaved = true
+                            else
+                                viewModel.isSaved = false
                         }
                         if(!viewModel.isSaved)
                             Text( text = "Salva" )

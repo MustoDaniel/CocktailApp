@@ -2,6 +2,7 @@ package com.example.cocktailapp.database
 
 import com.example.cocktailapp.database.entities.Cocktail
 import android.content.Context
+import androidx.compose.ui.text.toLowerCase
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -17,6 +18,7 @@ import com.example.cocktailapp.database.entities.SavedCocktail
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 @Database(
     entities = [
@@ -52,17 +54,30 @@ abstract class CocktailDB : RoomDatabase() {
                 super.onCreate(db)
                 Instance?.let { database ->
                     CoroutineScope(Dispatchers.IO).launch {
-                        populateDatabase(database.cocktailDao())
+                        populateDatabase(database.cocktailDao(), database.ingredientDao(), database.cocktail_IngredientDao())
                     }
                 }
             }
         }
 
-        suspend fun populateDatabase(cocktailDao: CocktailDao) {
+        private suspend fun populateDatabase(cocktailDao: CocktailDao, ingredientDao: IngredientDao, cocktailIngredientdao: Cocktail_IngredientDao) {
             val cocktails = Datasource().loadCocktails()
 
             cocktails.forEach { cocktail ->
-                cocktailDao.insert(cocktail as Cocktail)
+                cocktailDao.insert(cocktail)
+            }
+
+            cocktails.forEach { cocktail ->
+                cocktail.getIngredientsList().forEach{ name ->
+                    val ingredient = Ingredient(name = name.lowercase())
+                    var id = ingredientDao.insert(ingredient).toInt()
+
+                    if(id == -1)
+                        id = ingredientDao.getIngredientIdByName(name.lowercase())!!
+
+
+                    cocktailIngredientdao.insert(Cocktail_Ingredient(cocktail.idDrink, id))
+                }
             }
         }
     }
