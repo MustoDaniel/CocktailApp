@@ -12,6 +12,9 @@ interface IngredientDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insert(ingredient: Ingredient) : Long
 
+    @Query("select * from ingredient")
+    suspend fun getIngredients() : List<Ingredient>
+
     @Query("select * from ingredient where id = :id")
     fun getIngredient(id: Int): Ingredient?
 

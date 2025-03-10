@@ -10,12 +10,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.example.cocktailapp.viewModels.ApplicationViewModel
 
 @Composable
-fun OptionList(options: List<String>): String {
+fun OptionList(options: List<String>, appViewModel : ApplicationViewModel): String {
 
     var expanded by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf(options[0]) }
+    var selectedOption by remember { mutableStateOf(appViewModel.selectedOption) }
 
     Box {
 

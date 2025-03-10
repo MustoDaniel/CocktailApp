@@ -5,6 +5,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.example.cocktailapp.database.entities.Ingredient
 
 class ApplicationViewModel : ViewModel() {
 
@@ -18,4 +19,9 @@ class ApplicationViewModel : ViewModel() {
     var text by mutableStateOf("")
     var currentCocktail : Cocktail? = Cocktail()
     var isSaved by mutableStateOf(false)
+
+
+    //schermata Tutti i cocktail
+    var checkedIngredients by mutableStateOf<List<Ingredient>>(emptyList())  // Lista di ingredienti selezionati
+
 }

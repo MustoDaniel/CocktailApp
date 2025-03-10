@@ -62,7 +62,7 @@ fun Home(viewModel: ApplicationViewModel = viewModel()){
                 verticalAlignment = Alignment.CenterVertically
             ){
                 Text("Cerca cocktail per : ")
-                viewModel.selectedOption = OptionList(viewModel.options)
+                viewModel.selectedOption = OptionList(viewModel.options, viewModel)
             }
         }
 

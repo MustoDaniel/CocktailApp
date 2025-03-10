@@ -39,6 +39,9 @@ class DatabaseRepository(
     suspend fun getIngredientIdByName(name: String): Int? = withContext(Dispatchers.IO){
         ingredientDao.getIngredientIdByName(name)
     }
+    suspend fun getIngredients() : List<Ingredient> = withContext(Dispatchers.IO){
+        ingredientDao.getIngredients()
+    }
 
     //saved cocktail
     suspend fun insertSavedCocktail(savedCocktail: SavedCocktail) = withContext(Dispatchers.IO){

@@ -2,6 +2,7 @@ package com.example.cocktailapp.database.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.Locale
 
 @Entity
 data class Cocktail(
@@ -75,6 +76,6 @@ data class Cocktail(
             strIngredient13,
             strIngredient14,
             strIngredient15
-        )
+        ).map { it.toLowerCase(Locale.ROOT) }
     }
 }
